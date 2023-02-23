@@ -96,10 +96,10 @@ def Train():
 def Predict():
     st.markdown("""<h2 style="color:White;">Predict Page<h2/>""",unsafe_allow_html=True)
     left,right = st.columns(2)
-    search = left.text_input("","Book Title or Book Year or Rating or Author",label_visibility="collapsed")
+    search = left.text_input("","Book Title or top",label_visibility="collapsed")
     if right.button('Show as table'):  
         with st.container():
-            if "top" in search or  'popular' in search:
+            if "top" in search or  'popular' or 'Top' or 'Popular' in search:
                 text_search = search.split(" ")
                 st.write(popular_books(ratings_path,Books_path,int(text_search[1])))
             else:
