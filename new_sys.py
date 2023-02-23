@@ -33,6 +33,8 @@ def search_books(title_query, ratings_path,books_path, num_results=10):
     books = pd.read_csv(books_path)
     ratings = pd.read_csv(ratings_path)
 
+    books.drop_duplicates(subset=['ISBN'], inplace=True)
+
     data = pd.merge(books, ratings, on='ISBN')
 
     vectorizer = CountVectorizer()
@@ -43,17 +45,23 @@ def search_books(title_query, ratings_path,books_path, num_results=10):
     indices = np.argsort(-similarity_scores)
 
     results = []
-    for i in range(num_results):
+    unique_books = set()
+    for i in range(len(data)):
         index = indices[0][i]
-        result = {
-            'title': data.loc[index, 'Book-Title'],
-            'author': data.loc[index, 'Book-Author'],
-            'year': data.loc[index, 'Year-Of-Publication'],
-            'publisher': data.loc[index, 'Publisher'],
-            'image_url': data.loc[index, 'Image-URL-M'],
-            'rating': data.loc[index, 'Book-Rating'],
-            'user_id': data.loc[index, 'User-ID']
-        }
-        results.append(result)
+        book_title = data.loc[index, 'Book-Title']
+        if book_title not in unique_books:
+            result = {
+                'title': book_title,
+                'author': data.loc[index, 'Book-Author'],
+                'year': data.loc[index, 'Year-Of-Publication'],
+                'publisher': data.loc[index, 'Publisher'],
+                'image_url': data.loc[index, 'Image-URL-M'],
+                'rating': data.loc[index, 'Book-Rating'],
+                'user_id': data.loc[index, 'User-ID']
+            }
+            results.append(result)
+            unique_books.add(book_title)
+            if len(results) == num_results:
+                break
 
     return results

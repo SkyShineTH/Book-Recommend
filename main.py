@@ -37,21 +37,17 @@ st.markdown(
        """,
     unsafe_allow_html=True
 )
-
 st.markdown("""<h1 classname="name-title" style="color:White;text-align: center;">Book Recommend<h1/>""",unsafe_allow_html=True)
 first,second, third,fourth = st.columns(4)
 def Generate():
     src_file="data_template/Books.csv"
     st.markdown("""<h2 style="color:White;">Generate Page<h2/>""",unsafe_allow_html=True)
     left,right = st.columns(2)
-    title = right.text_input('', 'IRON MAN',label_visibility="collapsed")
+    title = right.text_input('', 'ชื่อไฟล์',label_visibility="collapsed")
     left.markdown("""<p style="color:White">กรอกชื่อไฟล์ที่ต้องการสร้าง<p/>""",unsafe_allow_html=True)
-    left.markdown(f"""<p style="color:White">คุณต้องการสร้างไฟล์ชื่อ: {title} ใช่ไหม<p/>""",unsafe_allow_html=True)
-    dst_file=f"user_data/{title}.csv"
-    if right.button("Create"):
-        shutil.copy(src_file,dst_file)
-        Books_path = dst_file
-        left.markdown(f"""<p style="color:White">สร้างไฟล์ {title} สำเร็จ<p/>""",unsafe_allow_html=True)
+    left.markdown(f"""<p style="color:White">คุณต้องการสร้างไฟล์ชื่อ: {title} ใช่ไหม<p/>""",unsafe_allow_html=True) 
+    csv = pd.read_csv(Books_path).to_csv()
+    right.download_button(label="Create",data=csv,file_name=f"{title}.csv",mime='text/csv')
 
 def Load():
     st.markdown("""<h2 style="color:White;">Load Page<h2/>""",unsafe_allow_html=True)
@@ -72,6 +68,7 @@ def Load():
             else:
                 st.markdown("""<h2 style="color:White;">กรุณาอัพไฟล์หรือกด Use Current file<h2/>""",unsafe_allow_html=True)
         if btn_current:
+            Books_path = 'data_template/Books.csv'
             dataframe = pd.read_csv(Books_path)
             st.write(dataframe)
             st.markdown("""<h2 style="color:White;">ได้ทำการเซ็ทไฟล์เสร็จแล้วไปที่หน้า Train ได้เลย<h2/>""",unsafe_allow_html=True)
